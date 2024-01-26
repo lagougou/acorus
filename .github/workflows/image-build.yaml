@@ -6,7 +6,7 @@ on:
 env:
   AWS_REGION : "ap-southeast-1"
 permissions:
-  id-token: write   # This is required for requesting the JWT
+  id-token: write
   contents: read  
 run-name: Build Image For Repo
 jobs:
