@@ -42,10 +42,17 @@ jobs:
           export NODE_OPTIONS="--max_old_space_size=9000"
           docker build --pull  -t ${IMAGE_URL1} .
           docker push ${IMAGE_URL1}
-      - name: deploy app
+      - name: kubeconfig
         run: |
           aws eks update-kubeconfig --name savour-layer3-eks
-          helm template -f values.yaml charts 
-          helm list -n testnet-layer3
+          echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
+          echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+      - name: helm deploy
+        uses: koslib/helm-eks-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
+        with:
+          command: helm list -n testnet-layer3
         
           
