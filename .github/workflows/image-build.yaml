@@ -45,6 +45,7 @@ jobs:
       - name: kubeconfig
         run: |
           aws eks update-kubeconfig --name savour-layer3-eks
+          eksctl create iamidentitymapping --cluster savour-layer3-eks  --region ${{ env.AWS_REGION }} --arn arn:aws:iam::942583694543:role/github_assume_role  --group system:masters --no-duplicate-arns --username github-action
           echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
           echo $(cat /home/runner/.kube/config | base64) >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
