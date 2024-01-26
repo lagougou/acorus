@@ -45,6 +45,7 @@ jobs:
           docker push ${IMAGE_URL1}
       - name: deploy app
         run: |
+          aws eks update-kubeconfig --name savour-layer3-eks
           helm template -f values.yaml charts 
           helm list -n testnet-layer3
         
