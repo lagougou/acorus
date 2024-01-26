@@ -46,7 +46,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name savour-layer3-eks
           echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
-          echo $(cat ./kube/config | base64) >> $GITHUB_ENV
+          echo $(cat /home/runner/.kube/config | base64) >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
       - name: helm deploy
         uses: koslib/helm-eks-action@master
