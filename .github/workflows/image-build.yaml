@@ -5,6 +5,7 @@ on:
       - main
 env:
   AWS_REGION : "ap-southeast-1"
+  app: acorus
 permissions:
   id-token: write
   contents: read  
@@ -34,7 +35,7 @@ jobs:
       - name: Build Docker Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPO: acorus
+          REPO: ${{ env.app }}
           #REF: ${{ github.event.inputs.ref }}
           COMMIT_SHA: ${{ steps.get-commit-sha.outputs.commit_sha }}
         run: |
@@ -53,6 +54,11 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
         with:
-          command: helm list -n testnet-layer3
+          command: |
+            HELM_OPTS="${HELM_OPTS} --set image.repository=${{ steps.login-ecr.outputs.registry }}/${{ env.app }}"
+            HELM_OPTS="${HELM_OPTS} --set image.tag=${{ steps.get-commit-sha.outputs.commit_sha }}"
+            helm template ${{ env.app }} -f values.yaml charts -n testnet-layer3 ${HELM_OPTS} 
+            helm upgrade --install ${{ env.app }} -f values.yaml -n testnet-layer3 ${HELM_OPTS}
+            
         
           
