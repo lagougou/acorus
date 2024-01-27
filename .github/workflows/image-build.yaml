@@ -49,7 +49,7 @@ jobs:
           echo $(cat /home/runner/.kube/config | base64) >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
       - name: helm deploy
-        uses: koslib/helm-eks-action@master
+        uses: koslib/helm-eks-action@v1.25.2
         env:
           KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
         with:
